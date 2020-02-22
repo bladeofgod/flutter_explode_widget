@@ -46,6 +46,10 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/
+    - assets/images/
+#    - assets/images/chrome.png
+#    - assets/images/firefox.png
+#    - assets/images/swiggy.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
