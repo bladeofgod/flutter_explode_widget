@@ -187,7 +187,150 @@ class ExplodeWidgetBodyState extends State<ExplodeWidgetBody> with TickerProvide
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return null;
+    return Container(
+      child: isImage
+              //监听流事件
+            ? StreamBuilder(
+              initialData: Colors.green[500],
+              stream: _stateController.stream,
+              builder: (ctx,snapshot){
+                return Stack(
+                  children: <Widget>[
+                    RepaintBoundary(
+                      //截屏
+                      key: paintKey,
+                      child: GestureDetector(
+                        onLongPress: ()async{
+                          imageAnimationController.forward();
+                          //renderbox  可以用于 定位
+                          RenderBox box = imageKey.currentContext.findRenderObject();
+                          //获得image的位置
+                          Offset imagePosition = box.localToGlobal(Offset.zero);
+
+                          double imagePositionOffsetX = imagePosition.dx;
+                          double imagePositionOffsetY = imagePosition.dy;
+
+                          double imageCenterPositionX = imagePositionOffsetX + (imageSize / 2);
+                          double imageCenterPositionY = imagePositionOffsetY + (imageSize / 2);
+
+                          final List<Color> colors = [];
+
+                          //从image 生成一组 颜色
+                          for(int i=0;i<noOfParticles; i++){
+                            if(i<21){
+                              //根据图片位置 随机从图片中抽取颜色
+                              getPixel(imagePosition,
+                                  Offset(imagePositionOffsetX + (i * 0.7),
+                                      imagePositionOffsetY - 60),
+                                  box.size.width)
+                                  .then((value){
+                                //收集颜色
+                                colors.add(value);
+                              });
+
+                            }else if(i>=21 && i < 42){
+                              getPixel(
+                                  imagePosition,
+                                  Offset(imagePositionOffsetX + (i * 0.7),
+                                      imagePositionOffsetY - 52),
+                                  box.size.width)
+                                  .then((value) {
+                                colors.add(value);
+                              });
+                            }else {
+                              getPixel(
+                                  imagePosition,
+                                  Offset(imagePositionOffsetX + (i * 0.7),
+                                      imagePositionOffsetY - 68),
+                                  box.size.width)
+                                  .then((value) {
+                                colors.add(value);
+                              });
+                            }
+
+                          }
+                          
+                          Future.delayed(new Duration(milliseconds: 4000),(){
+                            //根据上面收集的颜色 生成对应的颗粒
+                            //定义 每个颗粒的 编号id  颜色、尺寸、初始位置和死亡位置
+                            for(int i=0; i<noOfParticles;i++){
+                              if (i < 21) {
+                                particles.add(Particle(
+                                    id: i,
+                                    screenSize: widget.screenSize,
+                                    colors: colors[i].withOpacity(1.0),
+                                    offsetX: (imageCenterPositionX -
+                                        imagePositionOffsetX +
+                                        (i * 0.7)) *
+                                        0.1,
+                                    offsetY: (imageCenterPositionY -
+                                        (imagePositionOffsetY - 60)) *
+                                        0.1,
+                                    newOffsetX:
+                                    imagePositionOffsetX + (i * 0.7),
+                                    newOffsetY: imagePositionOffsetY - 60));
+                              } else if (i >= 21 && i < 42) {
+                                particles.add(Particle(
+                                    id: i,
+                                    screenSize: widget.screenSize,
+                                    colors: colors[i].withOpacity(1.0),
+                                    offsetX: (imageCenterPositionX -
+                                        imagePositionOffsetX +
+                                        (i * 0.5)) *
+                                        0.1,
+                                    offsetY: (imageCenterPositionY -
+                                        (imagePositionOffsetY - 52)) *
+                                        0.1,
+                                    newOffsetX:
+                                    imagePositionOffsetX + (i * 0.7),
+                                    newOffsetY: imagePositionOffsetY - 52));
+                              } else {
+                                particles.add(Particle(
+                                    id: i,
+                                    screenSize: widget.screenSize,
+                                    colors: colors[i].withOpacity(1.0),
+                                    offsetX: (imageCenterPositionX -
+                                        imagePositionOffsetX +
+                                        (i * 0.9)) *
+                                        0.1,
+                                    offsetY: (imageCenterPositionY -
+                                        (imagePositionOffsetY - 68)) *
+                                        0.1,
+                                    newOffsetX:
+                                    imagePositionOffsetX + (i * 0.7),
+                                    newOffsetY: imagePositionOffsetY - 68));
+                              }
+                            }
+
+                            setState(() {
+                              //取消图片显示
+                              isImage = false;
+                            });
+                          });
+
+                        },
+                        child: Container(
+                          alignment: FractionalOffset(
+                            //根据 屏幕尺寸来计算权重 然后定位
+                              (widget.imagePosFromLeft / widget.screenSize.width),
+                              (widget.imagePosFromTop / widget.screenSize.height)
+                            ),
+                          child: Transform(
+                            transform: Matrix4.translation(_shakeImage()),
+                            child: Image.asset(
+                              widget.imagePath,key: imageKey,width: imageSize,height: imageSize,
+                            ),
+                          ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+      ):Container()
+        ,
+    );
   }
 }
 
