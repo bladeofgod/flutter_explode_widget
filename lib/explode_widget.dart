@@ -323,14 +323,28 @@ class ExplodeWidgetBodyState extends State<ExplodeWidgetBody> with TickerProvide
                           ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
+
+                    )],
                 );
               },
-      ):Container()
+      ):Container(
+        child: Stack(
+          children: <Widget>[
+            for(Particle p in particles)
+              p.startParticleAnimation()
+          ],
+        ),
+      )
         ,
     );
+  }
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    imageAnimationController.dispose();
+    super.dispose();
   }
 }
 
