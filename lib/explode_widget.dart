@@ -30,7 +30,7 @@ class ExplodeWidget extends StatelessWidget{
   final double imagePosFromTop;
 
 
-  ExplodeWidget(this.imagePath, this.imagePosFromLeft, this.imagePosFromTop);
+  ExplodeWidget({this.imagePath, this.imagePosFromLeft, this.imagePosFromTop});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +114,7 @@ class ExplodeWidgetBodyState extends State<ExplodeWidgetBody> with TickerProvide
   ///横向 抖动 图片
   Vector3 _shakeImage(){
     return Vector3(
-        (math.sin(imageAnimationController.value) * math.pi * 20.0)*8,
+        math.sin((imageAnimationController.value) * math.pi * 20.0) * 8,
       0.0,0.0
     );
   }

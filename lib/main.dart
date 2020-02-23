@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_explode_widget/explode_widget.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,7 +25,45 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  //_MyHomePageState createState() => _MyHomePageState();
+  _ExplodeWidgetState createState() => _ExplodeWidgetState();
+}
+
+
+class _ExplodeWidgetState extends State<MyHomePage>{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return  Scaffold(
+      backgroundColor: Colors.black,
+      appBar: PreferredSize(
+        preferredSize: Size(double.infinity,50),
+        child: AppBar(
+          title: Text("explode widget"),
+          automaticallyImplyLeading: false,
+        ),
+      ),
+      body: Container(
+        child: Stack(
+          children: <Widget>[
+            ExplodeWidget(
+                imagePath: 'assets/images/swiggy.png',
+                imagePosFromLeft: 50.0,
+                imagePosFromTop: 200.0),
+            ExplodeWidget(
+                imagePath: 'assets/images/chrome.png',
+                imagePosFromLeft: 200.0,
+                imagePosFromTop: 400.0),
+            ExplodeWidget(
+                imagePath: 'assets/images/firefox.png',
+                imagePosFromLeft: 350.0,
+                imagePosFromTop: 600.0)
+          ],
+        ),
+      ),
+    );
+  }
+
 }
 
 class _MyHomePageState extends State<MyHomePage> {
